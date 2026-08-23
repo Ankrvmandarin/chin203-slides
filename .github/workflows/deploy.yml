@@ -28,6 +28,25 @@ jobs:
           cache: pnpm
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm build
+
+      # 學生網站上隱藏「Themes」與「Draft」兩列側邊欄項目。
+      # 只作用於發佈版；本機 pnpm dev 完全不受影響。
+      - name: Hide Themes and Draft in the published sidebar
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('dist/index.html')
+          html = p.read_text(encoding='utf-8')
+          labels = ['Themes', 'テーマ', '主题', '主題',
+                    'Draft', '下書き', '草稿']
+          sels = ', '.join(f'div:has(> button[aria-label="{l}"])' for l in labels)
+          css = f'<style>{sels}{{display:none !important}}</style>'
+          if css not in html:
+              html = html.replace('</head>', css + '</head>')
+              p.write_text(html, encoding='utf-8')
+              print('injected:', sels)
+          PY
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
