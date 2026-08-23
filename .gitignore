@@ -1,3 +1,11 @@
 node_modules
 dist
 .DS_Store
+
+# 待刪除的暫存資料夾，不推上 GitHub
+_to_delete/
+
+# 草稿簡報：資料夾名稱結尾是 -draft 的，只存在你的電腦上。
+# localhost 看得到、可以繼續改，但不會推上 GitHub，也就不會出現在學生網站。
+# 定稿後把資料夾改名拿掉 -draft，下次發佈就會上線。
+slides/*-draft/
