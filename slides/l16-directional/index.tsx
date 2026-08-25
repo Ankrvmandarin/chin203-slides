@@ -1,6 +1,21 @@
 import type { DesignSystem, Page, SlideMeta } from '@open-slide/core';
 import { Step, Steps } from '@open-slide/core';
 
+// 教师原有 pptx 的插图
+import imgStairs from './assets/stairs.png';
+import imgHouse from './assets/house.png';
+import imgFigure from './assets/figure.png';
+import imgRain from './assets/rain.png';
+import imgUmbrella from './assets/umbrella.png';
+import imgFire from './assets/fire.png';
+import imgFirefighter from './assets/firefighter.png';
+import imgCrowd from './assets/crowd.jpg';
+import imgNo from './assets/no.png';
+import imgHand from './assets/hand.png';
+import imgWakeup from './assets/wakeup.jpg';
+import imgChair from './assets/chair.png';
+import imgRecycle from './assets/recycle.jpg';
+import imgCans from './assets/cans.jpg';
 
 // Kai webfont (LXGW WenKai GB Screen) — renders 楷体 without a local install; local() used if present.
 const FONT_HREF = 'https://cdn.jsdelivr.net/npm/cn-fontsource-lxgw-wen-kai-gb-screen/font.css';
@@ -112,8 +127,8 @@ const RefTable = ({ rows }: { rows: { dir: string; en: string; lai: string; qu: 
             <span style={{ fontFamily: kai, fontSize: 40, fontWeight: 700 }}>{r.dir}</span>
             <span style={{ fontFamily: tnr, fontSize: 24, color: c.muted, fontStyle: 'italic' }}>{r.en}</span>
           </div>
-          <div style={{ ...cell, fontFamily: kai, fontSize: 40 }}>{r.lai === '—' ? <span style={{ color: c.faint }}>—</span> : <>{r.dir}<T>来</T></>}</div>
-          <div style={{ ...cell, fontFamily: kai, fontSize: 40 }}>{r.qu === '—' ? <span style={{ color: c.faint }}>—</span> : <>{r.dir}<T>去</T></>}</div>
+          <div style={{ ...cell, fontFamily: kai, fontSize: 40 }}>{r.lai === 'x' ? <span style={{ fontSize: 28, color: c.faint }}>不说</span> : <>{r.dir}<T>来</T></>}</div>
+          <div style={{ ...cell, fontFamily: kai, fontSize: 40 }}>{r.qu === 'x' ? <span style={{ fontSize: 28, color: c.faint }}>不说</span> : <>{r.dir}<T>去</T></>}</div>
         </div>
       ))}
     </div>
@@ -157,6 +172,38 @@ const BuildCol = ({ label, en, cards, color }: { label: string; en: string; card
     </div>
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center' }}>
       {cards.map((cd, i) => <BuildCard key={i} {...cd} />)}
+    </div>
+  </div>
+);
+
+// ── 圖片元件 ────────────────────────────────────────────────────────────────
+const Pic = ({ src, h, alt = '' }: { src: string; h: number; alt?: string }) => (
+  <img src={src} alt={alt} style={{ height: h, width: 'auto', objectFit: 'contain', display: 'block' }} />
+);
+
+// 空間圖示：一張情境圖 ＋「我在哪裡」對應的兩句話
+const SpatialCard = ({ img, imgH, where, lines }: { img: string; imgH: number; where: string; lines: React.ReactNode[] }) => (
+  <div style={{ flex: 1, border: `2px solid ${c.line}`, borderRadius: 16, background: c.bg, padding: '22px 26px 26px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+    <div style={{ height: imgH, display: 'flex', alignItems: 'center' }}><Pic src={img} h={imgH} /></div>
+    <div style={{ fontFamily: kai, fontSize: 34, fontWeight: 700, color: c.accent, background: 'rgba(31,78,154,0.08)', border: `1.5px solid ${c.accent}`, borderRadius: 40, padding: '6px 26px' }}>{where}</div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'center' }}>
+      {lines.map((l, i) => <div key={i} style={{ fontFamily: kai, fontSize: 48, lineHeight: 1.3 }}>{l}</div>)}
+    </div>
+  </div>
+);
+
+// 情境卡：圖 ＋ 一句挖空的話（答案逐步揭示）
+const SitCard = ({ imgs, imgH, pre, ans, post }: { imgs: string[]; imgH: number; pre: string; ans: string; post: string }) => (
+  <div style={{ flex: 1, border: `2px solid ${c.line}`, borderRadius: 16, background: c.bg, padding: '20px 20px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+    <div style={{ height: imgH, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 10 }}>
+      {imgs.map((s, i) => <Pic key={i} src={s} h={imgH} />)}
+    </div>
+    <div style={{ fontFamily: kai, fontSize: 34, lineHeight: 1.35, textAlign: 'center' }}>
+      {pre}
+      <span style={{ display: 'inline-block', minWidth: 116, textAlign: 'center', borderBottom: `2px solid ${c.faint}`, margin: '0 6px' }}>
+        <Step><span style={{ color: c.accent, fontWeight: 700 }}><HlY>{ans}</HlY></span></Step>
+      </span>
+      {post}
     </div>
   </div>
 );
@@ -228,6 +275,28 @@ const Concept: Page = () => (
   </Frame>
 );
 
+// NEW · 上/下 空間圖示（樓梯）
+const StairsSpatial: Page = () => (
+  <Frame tag="语法 · 趋向（一）">
+    <div style={{ position: 'absolute', top: 108, left: PAD, right: PAD }}>
+      <EnTag>Same action, different word · it depends on where I am standing</EnTag>
+      <div style={{ display: 'flex', gap: 40, marginTop: 8 }}>
+        <SpatialCard img={imgStairs} imgH={250} where="我在楼下" lines={[
+          <>她下楼<T>来</T>。</>,
+          <>她上楼<T>去</T>。</>,
+        ]} />
+        <SpatialCard img={imgStairs} imgH={250} where="我在楼上" lines={[
+          <>她上楼<T>来</T>。</>,
+          <>她下楼<T>去</T>。</>,
+        ]} />
+      </div>
+      <div style={{ marginTop: 24, fontFamily: tnr, fontSize: 28, color: c.slate, fontStyle: 'italic' }}>
+        来 = the person moves toward me　·　去 = the person moves away from me
+      </div>
+    </div>
+  </Frame>
+);
+
 // 4 · Reference table 1 — direction + 来/去
 const Table1: Page = () => (
   <Frame tag="语法 · 趋向（一）">
@@ -240,8 +309,52 @@ const Table1: Page = () => (
         { dir: '出', en: 'out', lai: '出来', qu: '出去' },
         { dir: '回', en: 'back', lai: '回来', qu: '回去' },
         { dir: '过', en: 'over', lai: '过来', qu: '过去' },
-        { dir: '起', en: 'up (rise)', lai: '起来', qu: '—' },
+        { dir: '起', en: 'up (rise)', lai: '起来', qu: 'x' },
       ]} />
+    </div>
+  </Frame>
+);
+
+// NEW · 进/出 空間圖示（房子）
+const HouseSpatial: Page = () => (
+  <Frame tag="语法 · 趋向（一）">
+    <div style={{ position: 'absolute', top: 108, left: PAD, right: PAD }}>
+      <EnTag>Inside or outside? The house shows where I am</EnTag>
+      <div style={{ display: 'flex', gap: 40, marginTop: 8 }}>
+        <SpatialCard img={imgHouse} imgH={250} where="我在里面" lines={[
+          <>他<T>进来</T>了。</>,
+          <>他<T>出去</T>了。</>,
+        ]} />
+        <SpatialCard img={imgHouse} imgH={250} where="我在外面" lines={[
+          <>他<T>进去</T>了。</>,
+          <>他<T>出来</T>了。</>,
+        ]} />
+      </div>
+      <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 22 }}>
+        <Pic src={imgFigure} h={72} />
+        <div style={{ fontFamily: kai, fontSize: 34, color: c.slate }}>
+          先想「<Hl>我站在哪里</Hl>」，再决定用<T>来</T>还是<T>去</T>。
+        </div>
+      </div>
+    </div>
+  </Frame>
+);
+
+// NEW · 三個真實情境（下雨 / 失火 / 不要进去）
+const SituationTrio: Page = () => (
+  <Frame tag="语法 · 趋向（一）">
+    <div style={{ position: 'absolute', top: 104, left: PAD, right: PAD }}>
+      <EnTag>Read the picture, then say the word. The teacher will reveal each answer.</EnTag>
+      <Steps>
+        <div style={{ display: 'flex', gap: 30, marginTop: 6 }}>
+          <SitCard imgs={[imgRain, imgUmbrella]} imgH={186} pre="外面下雨了，快" ans="进来" post="！" />
+          <SitCard imgs={[imgFire, imgFirefighter]} imgH={186} pre="失火了，里面的人快" ans="出来" post="！" />
+          <SitCard imgs={[imgCrowd, imgNo]} imgH={186} pre="失火了，大家不要" ans="进去" post="！" />
+        </div>
+      </Steps>
+      <div style={{ marginTop: 22, fontFamily: tnr, fontSize: 26, color: c.muted, fontStyle: 'italic' }}>
+        失火 shīhuǒ, a fire breaks out
+      </div>
     </div>
   </Frame>
 );
@@ -255,7 +368,7 @@ const Drill1: Page = () => (
       <Steps>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
           <Gap n={1} pre="外面下雨了，快" ans="进来" post="！" gloss="I am inside" />
-          <Gap n={2} pre="失火了，请里面的人快" ans="出来" post="！" gloss="失火 shīhuǒ, fire breaks out" />
+          <Gap n={2} pre="失火了，里面的人快" ans="出来" post="！" gloss="失火 shīhuǒ, fire breaks out" />
           <Gap n={3} pre="失火了，大家不要" ans="进去" post="！" />
           <Gap n={4} pre="他给你打电话，要你现在" ans="过去" post="。" gloss="go over to him" />
           <Gap n={5} pre="你几点" ans="回来" post="？我等你吃饭。" />
@@ -292,13 +405,13 @@ const Board1: Page = () => (
   <Frame tag="语法 · 趋向（一）">
     <div style={{ position: 'absolute', top: 112, left: PAD, right: PAD }}>
       <EnTag>Ask a partner for a favor. Bring it here (来) or take it there (去).</EnTag>
-      <div style={{ fontFamily: kai, fontSize: 52, fontWeight: 700, background: c.panel, border: `1px solid ${c.line}`, borderRadius: 12, padding: '16px 32px', display: 'inline-block' }}>请你　<Blank>＿＿</Blank>　<Blank>＿＿</Blank>　<T>来</T>。</div>
+      <div style={{ fontFamily: kai, fontSize: 52, fontWeight: 700, background: c.panel, border: `1px solid ${c.line}`, borderRadius: 12, padding: '16px 32px', display: 'inline-block' }}>请你给sb. V.  num. measure word + 来/去<Blank>{''}</Blank>{''}<Blank>{''}</Blank>{''}<T>{''}</T>。</div>
       <div style={{ marginTop: 24, display: 'flex', justifyContent: 'space-between', gap: 16 }}>
-        <Ill ico={icoCoffee} zh="咖啡" py="kāfēi" w={190} h={122} />
-        <Ill ico={icoFruit} zh="水果" py="shuǐguǒ" w={190} h={122} />
-        <Ill ico={icoBook} zh="书" py="shū" w={190} h={122} />
+        <Ill ico={icoCoffee} zh="一杯 咖啡" py="kāfēi" w={190} h={122} />
+        <Ill ico={icoFruit} zh="一个/一些 水果" py="shuǐguǒ" w={190} h={122} />
+        <Ill ico={icoBook} zh="一本 书" py="shū" w={190} h={122} />
         <Ill ico={icoSheet} zh="一张纸" py="zhǐ" w={190} h={122} />
-        <Ill ico={icoBox} zh="箱子" py="xiāngzi" w={190} h={122} />
+        <Ill ico={icoBox} zh="一个 箱子" py="xiāngzi" w={190} h={122} />
       </div>
       <div style={{ marginTop: 24 }}>
         <div style={{ fontFamily: tnr, fontSize: 24, color: c.muted, fontStyle: 'italic', marginBottom: 12 }}>verbs ↓</div>
@@ -354,6 +467,37 @@ const Builder: Page = () => (
       <div style={{ marginTop: 28, fontFamily: kai, fontSize: 48 }}>
         <span style={{ color: c.muted, fontFamily: tnr, fontSize: 26, fontStyle: 'italic', marginRight: 16 }}>for example</span>
         <span style={{ fontWeight: 700 }}><HlY>走过来</HlY>　·　<HlY>搬回去</HlY>　·　<HlY>拿起来</HlY>　·　<HlY>站起来</HlY></span>
+      </div>
+    </div>
+  </Frame>
+);
+
+// NEW · 每天都會用到的四個（过来 / 起来 / 坐下来 / 站起来）＋ 回收情境
+const Everyday: Page = () => (
+  <Frame tag="语法 · 趋向（二）">
+    <div style={{ position: 'absolute', top: 100, left: PAD, right: PAD }}>
+      <EnTag>You will hear these every day in class</EnTag>
+      <div style={{ display: 'flex', gap: 24, marginTop: 6 }}>
+        {[
+          { img: imgHand, h: 128, zh: <>请你<T>过来</T>。</>, en: 'come over here' },
+          { img: imgWakeup, h: 128, zh: <>快<T>起来</T>！</>, en: 'get up' },
+          { img: imgChair, h: 128, zh: <>请<T>坐下来</T>。</>, en: 'sit down' },
+          { img: imgChair, h: 128, zh: <>请<T>站起来</T>。</>, en: 'stand up' },
+        ].map((it, i) => (
+          <div key={i} style={{ flex: 1, border: `2px solid ${c.line}`, borderRadius: 16, background: c.bg, padding: '18px 14px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+            <div style={{ height: it.h, display: 'flex', alignItems: 'center' }}><Pic src={it.img} h={it.h} /></div>
+            <div style={{ fontFamily: kai, fontSize: 36, textAlign: 'center' }}>{it.zh}</div>
+            <div style={{ fontFamily: tnr, fontSize: 22, color: c.muted, fontStyle: 'italic' }}>{it.en}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ marginTop: 26, display: 'flex', alignItems: 'center', gap: 26, background: c.panel, border: `1px solid ${c.line}`, borderRadius: 14, padding: '18px 26px' }}>
+        <Pic src={imgCans} h={104} />
+        <Pic src={imgRecycle} h={104} />
+        <div style={{ fontFamily: kai, fontSize: 38, lineHeight: 1.4 }}>
+          请你把空罐子<T>拿出来</T>，<T>放进</T>回收桶<T>去</T>。
+          <div style={{ fontFamily: tnr, fontSize: 24, color: c.muted, fontStyle: 'italic', marginTop: 6 }}>空罐子 kōng guànzi, empty can　·　回收桶 huíshōutǒng, recycling bin</div>
+        </div>
       </div>
     </div>
   </Frame>
@@ -453,18 +597,22 @@ const Closing: Page = () => (
   </Frame>
 );
 
-export const meta: SlideMeta = { title: '趋向补语（整合版）她走下楼来／搬进来', createdAt: '2026-08-21T16:00:00.000Z' };
+export const meta: SlideMeta = { title: '趋向补语（图解版）她走下楼来／搬进来', createdAt: '2026-08-23T16:00:00.000Z' };
 
 export const notes: (string | undefined)[] = [
-  '整合版趋向补语教学：把你 pptx 的顺序（参考表 → 情境操练 → 三层总览 → 两段填空）＋课本 Pattern A1/A2/B 优化成一套。可分两天教：Part 1（简单趋向，第 2 至 7 页）8/24；Part 2（复合趋向，第 8 至 14 页）8/25。',
+  '图解版（本机教学用，含教师旧 pptx 的插图，不发布到学生网站）。整合了你 pptx 的顺序（空间图示 → 参考表 → 情境操练 → 三层总览 → 填空）＋课本 Pattern A1/A2/B。可分两天教：Part 1（简单趋向，第 2 至 10 页）8/24；Part 2（复合趋向，第 11 至 18 页）8/25。',
   '大图：三层积木——来/去、方向+来/去、动词+方向+来/去。让学生先看到整体，知道今天走到哪一层。',
   '核心概念：来/去看「说话的人在哪里」。她下楼来【我在楼下】、她上楼去。请你买水果来＝拿到我这里（连到课文）。多用手势指方向。',
+  '空间图示（楼梯）：同一个动作，因为「我」站的位置不同，用词就不同。左卡我在楼下、右卡我在楼上，两边对着念。老师可站到教室前后示范。',
   '参考表（简单趋向）：上下进出回过起＋来/去。带学生念一遍，注意「起去」不说（只有起来）。',
-  '情境填空（简单趋向）：读情境选词，逐步揭示答案（空白键）。学生在学习单上做，老师在投影幕上对答案。失火 shīhuǒ 先讲。',
+  '空间图示（房子）：里外对照。他进来/出去【我在里面】；他进去/出来【我在外面】。提醒学生先想「我站在哪里」。',
+  '三个真实情境（图）：下雨快进来、失火快出来、大家不要进去。看图说词，逐步揭示答案（空白键）。失火 shīhuǒ 先讲。',
+  '情境填空（简单趋向）：读情境选词，逐步揭示答案。学生在学习单上做，老师在投影幕上对答案。',
   '语序（Pattern A1）：动词＋地方/东西＋来/去；地方一定在来/去前面。「她下来楼」是错的。这是最保险的语序。',
   '放手产出：请你＿＿＿来。看图（咖啡/水果/书/纸/箱子）＋动词（买/拿/送/带/给）自由组句，先两两，再抽点。',
   'Part 2 复合趋向：动词放前面说「怎么移动」，说话人规则不变。她走下楼来【我在楼下】、走进教室来/去看我在里还是外。（连到课文「她走下楼来」）',
   '造词器：从三栏各选一个——动词（走跑拿搬带坐站）＋方向（上下进出回过起）＋来/去。示范走过来、搬回去、拿起来、站起来。',
+  '每天都会用到的四个（图）：过来、起来、坐下来、站起来——这些是课堂指令，学生天天听到。下面回收情境练「拿出来、放进…去」，可请学生实际做动作。',
   '情境填空（复合趋向）：读情境选词，逐步揭示。坐下来/站起来/走过来/拿过来/搬上去/带回去。',
   '说话人在哪里：读方向和来/去判断「我」的位置。先两两，再抽点，第 6 题开放个人化。',
   '认得就好（不必操练）：动作完成时会看到「买回来了水果、拿出来一件衣服」，来/去被拉到东西前面。告诉学生：不确定时，把东西放在来/去前面最保险。',
@@ -472,4 +620,7 @@ export const notes: (string | undefined)[] = [
   '收尾 exit ticket：说两句一句来一句去，并说你在哪里。作业：L16-2 Grammar&Writing-D、Listening-B。',
 ];
 
-export default [Cover, BigPicture, Concept, Table1, Drill1, PatternA1, Board1, Compound, Builder, Drill2, WhereSpeaker, AlsoBoth, Package, Closing] satisfies Page[];
+export default [
+  Cover, BigPicture, Concept, StairsSpatial, Table1, HouseSpatial, SituationTrio, Drill1, PatternA1, Board1,
+  Compound, Builder, Everyday, Drill2, WhereSpeaker, AlsoBoth, Package, Closing,
+] satisfies Page[];

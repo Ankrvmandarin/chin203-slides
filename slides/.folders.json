@@ -3,15 +3,22 @@
     {
       "id": "f-1f4e9a16",
       "name": "第十六课",
-      "icon": { "type": "color", "value": "#1f4e9a" }
+      "icon": {
+        "type": "color",
+        "value": "#1f4e9a"
+      }
+    },
+    {
+      "id": "f-e8429cdd",
+      "name": "第十七課",
+      "icon": {
+        "type": "color",
+        "value": "#f76b15"
+      }
     }
   ],
   "assignments": {
-    "l16-yufa-1": "f-1f4e9a16",
-    "l16-yufa-2": "f-1f4e9a16",
     "l16-directional": "f-1f4e9a16",
-    "l16-d1-kewen": "f-1f4e9a16",
-    "l16-d2-kewen": "f-1f4e9a16",
-    "l16-review": "f-1f4e9a16"
+    "l17-yufa-1-draft": "f-e8429cdd"
   }
 }
